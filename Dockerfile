@@ -22,7 +22,6 @@ COPY custom/profile.sh /etc/profile
 #####
 ## Setup Entrypoint
 #####
-
 # Copy Entrypoint
 COPY ./docker-entrypoint.sh /usr/bin/custom-docker-entrypoint.sh
 
@@ -56,7 +55,6 @@ WORKDIR /docs
 #####
 ## Expose ports
 #####
-
 # Default Port of Docsify
 EXPOSE 3000/tcp
 
