@@ -1,0 +1,100 @@
+# Build & Publish Docker Images
+name: build-docker
+
+# trigger events
+on:
+  # build latest every day @ 03:11 hrs
+  schedule:
+    - cron: "11 3 * * *"
+  # build on push
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'Dockerfile'
+
+# Env
+env:
+  VERSION: latest
+  DKHUB_SLUG: sujaykumarh/docsify
+  GHCR_SLUG: ghcr.io/sujaykumarh/docsify
+
+
+# Jobs
+jobs:
+
+  # Build Docker Images
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Pull Source Code
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+
+      # Set up QEMU env
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      # Set up Docker for Buildx env
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      ## Prepare env
+      - name: Prepare env
+        id:   prep
+        run: |
+          DKHUB_IMAGE=${{ env.DKHUB_SLUG }}
+          GHCR_IMAGE=${{ env.GHCR_SLUG }}
+          VERSION=${{ env.VERSION }}
+
+          TAGS="${DKHUB_IMAGE}:${VERSION}"
+          TAGS="$TAGS,${GHCR_IMAGE}:${VERSION}"
+
+          echo ::set-output name=version::${VERSION}
+          echo ::set-output name=tags::${TAGS}
+          echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+
+      ## Login
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      -
+        name: Login to GHCR
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build & Publish Docker Images
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.prep.outputs.tags }}
+          labels: |
+            org.opencontainers.image.title=${{ github.event.repository.name }}
+            org.opencontainers.image.description=${{ github.event.repository.description }}
+            org.opencontainers.image.url=${{ github.event.repository.html_url }}
+            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
+            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
+            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+
+      # View Image Digest
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}

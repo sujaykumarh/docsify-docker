@@ -1,0 +1,9 @@
+version: "3"
+
+
+services:
+    # build latest
+    latest:
+        image: docsify:latest
+        build:
+            context: ./
