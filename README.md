@@ -2,7 +2,7 @@
 
 A Simple [Docsify](https://github.com/docsifyjs/docsify) running env.
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/sujaykumarh/docsify-docker/build)](https://github.com/Sujaykumarh/docsify-docker/actions)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/sujaykumarh/docsify-docker/build-docker)](https://github.com/Sujaykumarh/docsify-docker/actions)
 [![Docker Image Size (tag)](https://img.shields.io/docker/image-size/sujaykumarh/docsify/latest)](https://hub.docker.com/r/sujaykumarh/docsify)
 [![Docker Pulls](https://img.shields.io/docker/pulls/sujaykumarh/docsify)](https://hub.docker.com/r/sujaykumarh/docsify)
 
