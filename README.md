@@ -39,7 +39,7 @@ A Simple [Docsify](https://github.com/docsifyjs/docsify) running env.
 ### Example setup
 
 ```bash
-git clone
+git clone https://github.com/Sujaykumarh/docsify-docker-example.git
 ```
 
 <br>
