@@ -3,9 +3,10 @@ name: build-docker
 
 # trigger events
 on:
-  # build latest every day @ 03:11 hrs
+  # build latest every day @ 05:11 hrs IST
+  # IST: 05:11 hrs -> UTC 23:41 hrs
   schedule:
-    - cron: "11 3 * * *"
+    - cron: "41 23 * * *"
   # build on push
   push:
     branches:
