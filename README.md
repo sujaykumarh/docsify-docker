@@ -38,6 +38,8 @@ A Simple [Docsify](https://github.com/docsifyjs/docsify) running env.
 
 ### Example setup
 
+Example [repo](https://github.com/Sujaykumarh/docsify-docker-example.git)
+
 ```bash
 git clone https://github.com/Sujaykumarh/docsify-docker-example.git
 ```
@@ -50,14 +52,14 @@ git clone https://github.com/Sujaykumarh/docsify-docker-example.git
 
 ```bash
 # initilize docs folder using docsify
-docker run --rm -v docs:/docs sujaykumarh/docsify init
+docker run --rm -v docs:/docs ghcr.io/sujaykumarh/docsify init
 ```
 
 ### Run
 
 ``` bash
 # using docker container
-docker run --rm -v docs:/docs sujaykumarh/docsify serve
+docker run --rm -v docs:/docs ghcr.io/sujaykumarh/docsify serve
 ```
 
 ### Optional Params
