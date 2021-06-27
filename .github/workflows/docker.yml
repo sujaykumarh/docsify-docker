@@ -19,6 +19,7 @@ env:
   VERSION: latest
   DKHUB_SLUG: sujaykumarh/docsify
   GHCR_SLUG: ghcr.io/sujaykumarh/docsify
+  PACKAGE_NAME: docsify
 
 
 # Jobs
