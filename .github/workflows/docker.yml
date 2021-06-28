@@ -96,14 +96,14 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
 
-  ghcr-cleanup:
-    runs-on: ubuntu-latest
-    needs: docker-build
-    steps:
+  # ghcr-cleanup:
+  #   runs-on: ubuntu-latest
+  #   needs: docker-build
+  #   steps:
 
-      # Github delete old untagged packages
-      - name: Delete untagged images
-        uses: actions/delete-package-versions@v1
-        with:
-          package-name: ${{env.PACKAGE_NAME}}
-          num-old-versions-to-delete: 3
+  #     # Github delete old untagged packages
+  #     - name: Delete untagged images
+  #       uses: actions/delete-package-versions@v1
+  #       with:
+  #         package-name: ${{env.PACKAGE_NAME}}
+  #         num-old-versions-to-delete: 3

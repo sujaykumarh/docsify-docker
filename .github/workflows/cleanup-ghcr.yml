@@ -1,0 +1,24 @@
+# .github/workflows/cleanup-ghcr.yml
+# Cleanup residue from ghcr
+name: cleanup-ghcr
+
+on:
+  workflow_dispatch:
+
+# Env
+env:
+  PACKAGE_NAME: docsify
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: cleanup
+        uses: kc1r74p/delete-package-versions@main
+        with:
+          owner: ${{ github.repository_owner }}
+          package-name: '${{ secrets.PACKAGE_NAME }}'
+          package-type: 'container'
+          ignore-tag: 'latest'
+          token: ${{ secrets.GITHUB_TOKEN }}
