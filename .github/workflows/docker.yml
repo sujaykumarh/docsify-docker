@@ -3,6 +3,7 @@ name: build-docker
 
 # trigger events
 on:
+  workflow_dispatch:
   # build latest every day @ 05:11 hrs IST
   # IST: 05:11 hrs -> UTC 23:41 hrs
   schedule:

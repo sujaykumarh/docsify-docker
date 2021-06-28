@@ -15,10 +15,32 @@ jobs:
 
     steps:
       - name: cleanup
-        uses: kc1r74p/delete-package-versions@main
+        # not working
+        # uses: kc1r74p/delete-package-versions@main
+        # with:
+        #   owner: ${{ github.repository_owner }}
+        #   package-name: '${{ secrets.PACKAGE_NAME }}'
+        #   package-type: 'container'
+        #   ignore-tag: 'latest'
+        #   token: ${{ secrets.GITHUB_TOKEN }}
+
+        # test: https://github.community/t/are-tag-less-container-images-deleted/132977/12
+        uses: actions/github-script@v3
         with:
-          owner: ${{ github.repository_owner }}
-          package-name: '${{ secrets.PACKAGE_NAME }}'
-          package-type: 'container'
-          ignore-tag: 'latest'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # github-token: ${{ secrets.GH_DELETE_PKGS_TOKEN }} #
+          script: |
+            const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions",
+              { per_page: ${{ env.PER_PAGE }}
+            });
+            for(version of response.data) {
+                if (version.metadata.container.tags.length == 0) {
+                    console.log("delete " + version.id)
+                    const deleteResponse = await github.request("DELETE /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions/" + version.id, { });
+                    console.log("status " + deleteResponse.status)
+                }
+            }
+        env:
+          OWNER: ${{ github.repository_owner }} # or orgs/<org name>
+          PACKAGE_NAME: ${{ secrets.PACKAGE_NAME }}
+          PER_PAGE: 100
