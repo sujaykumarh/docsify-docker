@@ -8,6 +8,7 @@ on:
 # Env
 env:
   PACKAGE_NAME: docsify
+  OWNER: ${{ github.repository_owner }} # or orgs/<org name>
 
 jobs:
   cleanup:
@@ -41,6 +42,4 @@ jobs:
                 }
             }
         env:
-          OWNER: ${{ github.repository_owner }} # or orgs/<org name>
-          PACKAGE_NAME: ${{ secrets.PACKAGE_NAME }}
           PER_PAGE: 100
