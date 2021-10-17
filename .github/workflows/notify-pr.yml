@@ -1,0 +1,23 @@
+name: notify-on-pr
+
+on:
+  pull_request:
+  
+jobs:
+  notify-pr:
+    runs-on: ubuntu-latest
+    steps:
+
+      - run: |
+          touch msg.txt
+          cat << EOF > msg.txt
+          new pr #${{ github.event.pull_request.number }} 
+          '${{ github.event.pull_request.title }}'
+          
+          repo : ${{ github.event.repository.name }}
+          branch : ${{ github.event.pull_request.head.ref }}
+          author : ${{ github.event.pull_request.user.login }}
+          commits : ${{ github.event.pull_request.commits }}            
+     
+      - name: notify
+        run: docker run --rm ghcr.io/sujaykumarh/telegram-notify:stable send "`cat msg.txt`" --token "${{ secrets.TBOT_TOKEN }}" --chatId "${{ secrets.TCHAT_ID }}"

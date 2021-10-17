@@ -1,0 +1,23 @@
+name: notify-new-issue
+on:
+  issues:
+    types: [opened]
+  
+jobs:
+  notify-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          touch msg.txt
+          cat << EOF > msg.txt
+          new issue #${{ github.event.issue.number }} 
+          '${{ github.event.issue.title }}'
+          
+          action: ${{ github.event.action }}
+          
+          repo : ${{ github.event.repository.name }}
+          author : ${{ github.event.issue.user.login }}
+          state: ${{ github.event.issue.state }}
+              
+      - name: notify
+        run: docker run --rm ghcr.io/sujaykumarh/telegram-notify:stable send "`cat msg.txt`" --token "${{ secrets.TBOT_TOKEN }}" --chatId "${{ secrets.TCHAT_ID }}"
