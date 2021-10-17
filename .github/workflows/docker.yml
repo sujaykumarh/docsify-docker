@@ -6,8 +6,14 @@ on:
   workflow_dispatch:
   # build latest every day @ 05:11 hrs IST
   # IST: 05:11 hrs -> UTC 23:41 hrs
+  #schedule:
+  #  - cron: "41 23 * * *"
+  
+  # build latest every week on SUNDAY @ 05:11 hrs IST
+  # IST: 05:11 hrs -> UTC 23:41 hrs
   schedule:
-    - cron: "41 23 * * *"
+   - cron: "41 23 * * 0"
+  
   # build on push
   push:
     branches:
