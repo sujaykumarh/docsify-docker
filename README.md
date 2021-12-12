@@ -6,6 +6,8 @@ A Simple [Docsify](https://github.com/docsifyjs/docsify) running env.
 [![Docker Image Size (tag)](https://img.shields.io/docker/image-size/sujaykumarh/docsify/latest)](https://hub.docker.com/r/sujaykumarh/docsify)
 [![Docker Pulls](https://img.shields.io/docker/pulls/sujaykumarh/docsify)](https://hub.docker.com/r/sujaykumarh/docsify)
 
+`:latest` docker image is built every week on SUNDAY @ UTC 23:41 hrs
+
 ### Table of contents
 
 - 📥 [Download](#-download)
