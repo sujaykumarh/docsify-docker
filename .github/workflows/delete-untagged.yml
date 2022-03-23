@@ -5,6 +5,10 @@ on:
   # Manual
   workflow_dispatch:
 
+  # automatic every month on 2nd day on 03:18
+  schedule:
+    - cron: '18 3 2 * *'
+
 jobs:
   delete-untagged:
     name: delete-untagged
@@ -15,4 +19,4 @@ jobs:
         with:
           package_name: laraondock
           user: sujaykumarh
-          token: ${{ secrets.PAT_GITHUB }}
+          token: ${{ secrets.GITHUB_TOKEN }}
