@@ -8,9 +8,9 @@ FROM node:lts-alpine
 #####
 ## Docker labels
 #####
-LABEL maintainer="Sujaykumar.Hublikar <hello@sujaykumarh.com>" \
+LABEL maintainer="sujaykumarh" \
         name="docsify" \
-        copyright="Copyright (c) 2021 Sujaykumar.Hublikar <hello@sujaykumarh.com>." \
+        copyright="Copyright (c) 2021 sujaykumarh." \
         license="Apache License, Version 2.0" \
         description="Docsify run env."
 

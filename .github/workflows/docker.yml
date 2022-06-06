@@ -3,7 +3,10 @@ name: build-docker
 
 # trigger events
 on:
+  ## manual
   workflow_dispatch:
+
+  ## automatic
   # build latest every day @ 05:11 hrs IST
   # IST: 05:11 hrs -> UTC 23:41 hrs
   #schedule:
@@ -11,8 +14,8 @@ on:
   
   # build latest every week on SUNDAY @ 05:11 hrs IST
   # IST: 05:11 hrs -> UTC 23:41 hrs
-  schedule:
-   - cron: "41 23 * * 0"
+  # schedule:
+  #  - cron: "41 23 * * 0"
   
   # build on push
   push:
@@ -68,14 +71,13 @@ jobs:
           echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
       ## Login
-      -
-        name: 🔐 Login to DockerHub
+      - name: 🔐 Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      -
-        name: 🔐 Login to GHCR
+
+      - name: 🔐 Login to GHCR
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
@@ -83,8 +85,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Build & Publish Docker Images
-      -
-        name: ⛏️ 🐳 Build and 🚀 push
+      - name: ⛏️ 🐳 Build and 🚀 push
         id: docker_build
         if: always()
         uses: docker/build-push-action@v2
@@ -104,10 +105,10 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
 
-      - name: 🗑️ Purge untagged packages from ghcr
-        uses: sujaykumarh/delete-untagged-containers@main
-        with:
-          package_name: laraondock
-          user: sujaykumarh
-          # This is a person access token with
-          token: ${{ secrets.PAT_GITHUB }}
+      # - name: 🗑️ Purge untagged packages from ghcr
+      #   uses: sujaykumarh/delete-untagged-containers@main
+      #   with:
+      #     package_name: laraondock
+      #     user: sujaykumarh
+      #     # This is a person access token with
+      #     token: ${{ secrets.PAT_GITHUB }}
