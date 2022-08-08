@@ -1,3 +1,8 @@
+**⚠️ Notice**
+This project is no longer maintained - [read on #2](https://github.com/sujaykumarh/docsify-docker/issues/2)
+
+---
+
 # 📦 Docsify
 
 A Simple [Docsify](https://github.com/docsifyjs/docsify) running env.
