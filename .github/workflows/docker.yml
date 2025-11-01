@@ -1,35 +1,17 @@
-# Build & Publish Docker Images
-name: build-docker
+name: "Build & Publish Docker Image"
 
 # trigger events
 on:
-  ## manual
+  # manual
   workflow_dispatch:
-
-  ## automatic
-  # build latest every day @ 05:11 hrs IST
-  # IST: 05:11 hrs -> UTC 23:41 hrs
-  #schedule:
-  #  - cron: "41 23 * * *"
   
-  # build latest every week on SUNDAY @ 05:11 hrs IST
-  # IST: 05:11 hrs -> UTC 23:41 hrs
-  # schedule:
-  #  - cron: "41 23 * * 0"
-  
-  # build on push
+  # automatic
   push:
     branches:
       - 'main'
     paths:
-      - 'Dockerfile'
-
-# Env
-env:
-  VERSION: latest
-  DKHUB_SLUG: sujaykumarh/docsify
-  GHCR_SLUG: ghcr.io/sujaykumarh/docsify
-  PACKAGE_NAME: docsify
+      - "Dockerfile"
+      - ".docker/**"
 
 
 # Jobs
@@ -37,78 +19,69 @@ jobs:
 
   # Build Docker Images
   docker-build:
+    name: build-docker-image
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' }}
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+      attestations: write
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: docsify
+      # IMAGE_NAME: ${{ github.repository }}
+
     steps:
 
       # Pull Source Code
       -
         name: 📥 Pull source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
       # Set up QEMU env
       -
         name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v3
 
       # Set up Docker for Buildx env
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      ## Prepare env
-      - name: 📦 Prepare env
-        id:   prep
-        run: |
-          DKHUB_IMAGE=${{ env.DKHUB_SLUG }}
-          GHCR_IMAGE=${{ env.GHCR_SLUG }}
-          VERSION=${{ env.VERSION }}
-
-          TAGS="${DKHUB_IMAGE}:${VERSION}"
-          TAGS="$TAGS,${GHCR_IMAGE}:${VERSION}"
-
-          echo ::set-output name=version::${VERSION}
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+        uses: docker/setup-buildx-action@v3
 
       ## Login
-      - name: 🔐 Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
       - name: 🔐 Login to GHCR
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+        env:
+          DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
+
       # Build & Publish Docker Images
-      - name: ⛏️ 🐳 Build and 🚀 push
-        id: docker_build
-        if: always()
-        uses: docker/build-push-action@v2
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        id: build-push
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.prep.outputs.tags }}
-          labels: |
-            org.opencontainers.image.title=${{ github.event.repository.name }}
-            org.opencontainers.image.description=${{ github.event.repository.description }}
-            org.opencontainers.image.url=${{ github.event.repository.html_url }}
-            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
-            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
-            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
-
-      # - name: 🗑️ Purge untagged packages from ghcr
-      #   uses: sujaykumarh/delete-untagged-containers@main
-      #   with:
-      #     package_name: laraondock
-      #     user: sujaykumarh
-      #     # This is a person access token with
-      #     token: ${{ secrets.PAT_GITHUB }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          annotations: ${{ steps.meta.outputs.annotations }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+      
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attest
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          subject-digest: ${{ steps.build-push.outputs.digest }}
+          push-to-registry: true

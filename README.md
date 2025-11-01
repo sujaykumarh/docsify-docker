@@ -1,5 +1,6 @@
-**⚠️ Notice**
-This project is no longer maintained - [read on #2](https://github.com/sujaykumarh/docsify-docker/issues/2)
+
+> [!IMPORTANT]
+> This project is no longer maintained
 
 ---
 
@@ -10,8 +11,6 @@ A Simple [Docsify](https://github.com/docsifyjs/docsify) running env.
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/sujaykumarh/docsify-docker/build-docker)](https://github.com/sujaykumarh/docsify-docker/actions)
 [![Docker Image Size (tag)](https://img.shields.io/docker/image-size/sujaykumarh/docsify/latest)](https://hub.docker.com/r/sujaykumarh/docsify)
 [![Docker Pulls](https://img.shields.io/docker/pulls/sujaykumarh/docsify)](https://hub.docker.com/r/sujaykumarh/docsify)
-
-<!-- `:latest` docker image is built every week on SUNDAY @ UTC 23:41 hrs -->
 
 <br>
 
